@@ -1,0 +1,47 @@
+<!doctype html>
+    <head>
+        <meta charset="utf-8">
+        <title>Consultar Datos</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    </head>
+
+    <body>
+        <header>
+            <a href=" {{url_for('index') }} ">HOME</a>
+            <a href=" {{url_for('get')}} ">Consultar</a>
+            <a href=" {{url_for('post')}} ">Agregar</a>
+            <a href=" {{url_for('put')}} ">Modificar</a>
+            <a href=" {{url_for('delete')}} ">Eliminar</a>
+        </header>
+        <h1>Agregar preguntas</h1>
+        <br>
+        <form id="form">
+            <label>Pregunta</label>
+            <input type="text" id="textoPregunta" name="textoPregunta">
+            <br><br>
+            <label>Seleccionar nivel</label>
+            <select name="nivel" id="nivel" required>
+                <option value="" selected disabled>Elegir un nivel...</option>
+                <option value="1">Nivel 1: Introduccion a la Agenda</option>
+                <option value="2">Nivel 2: Informacion sobre los ODS</option>
+                <option value="bonus">Nivel 3: Bonus, estadísticas</option>
+            </select>
+            <br><br>
+            <label>Seleccionar categoria</label>
+            <select name="categoria" id="categoria" required>
+                <option value="" selected disabled>Elegir una categoria...</option>
+                <option value="Agenda 2030">Agenda 2030</option>
+                <option value="ODS 4">ODS 4: Educacion</option>
+                <option value="ODS 10">ODS 10: Reduccion de las desigualdades</option>
+                <option value="ODS 15">ODS 15: Vida de ecosistemas terrestres</option>
+                <option value="Estadísticas">Estadistica</option>
+            </select>
+            <br><br>
+        </form>
+        <br>
+            <button type="button" onclick="enviar()">Enviar pregunta</button>
+        
+
+    <script src="../static/script/post.js"></script>
+    </body>
+</html>
