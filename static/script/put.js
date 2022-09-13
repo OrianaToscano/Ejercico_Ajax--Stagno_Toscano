@@ -1,16 +1,40 @@
-function cargarPregunta(){
+function cargarPreguntas(){
     $.ajax({
         url:"/listaPreguntas",
         type:"GET",
         //data: {"value":valor},
         success: function(response){
+            cargarRespuestas(response)     
+        },
+        error: function(error){
+            //console.log(error);
+    }, });
+}
+
+function cargarRespuestas(preguntas){
+    $.ajax({
+        url:"/listaRespuestas",
+        type:"GET",
+        //data: {"value":valor},
+        success: function(response){
             console.log(response)
-            let preguntas = response.map(i => i.pregunta)
+            console.log(preguntas)
+            let respuestas = response.map(i => i.respuesta)
             let txt = "";
-            for(let i=0 ; i<preguntas.length ; i++){
-                txt += `<option value="${preguntas[i]}" data-id="${response[i].id_pregunta}" >${preguntas[i]}</option><br>`
+            
+            txt += "<option selected disabled>Ninguna seleccionada</option><br>"
+            
+            for(let i=0 ; i<respuestas.length ; i++){
+                
+                txt += `
+                <optgroup label="${preguntas[i].pregunta}">
+                <option value="${respuestas[i]}" data-id="${response[i].id_respuesta}" >${respuestas[i]}</option><br>
+                </optgroup>`
+                
+
             };
-            document.getElementById('preg').innerHTML += txt;
+
+            document.getElementById('preg').innerHTML = txt;
                 
         },
         error: function(error){
@@ -18,7 +42,7 @@ function cargarPregunta(){
     }, });
 }
 
-window.onload = cargarPregunta()
+window.onload = cargarPreguntas()
 
 
 function mostrarPreg(){
@@ -29,8 +53,8 @@ function mostrarPreg(){
     
     let txt = `
     <h2>Pregunta seleccionada:</h2>
-    <input class="form-control mb-2" type="text" value="${valor.value}" name="textoPregunta" id="textoPregunta" style="width:90vw">
-    <input type="text" value="${id}" readonly style="display:none" name="idPregunta" id="idPregunta">
+    <input class="form-control mb-2" type="text" value="${valor.value}" name="textoRespuesta" id="textoRespuesta" style="width:90vw">
+    <input type="text" value="${id}" readonly style="display:none" name="idRespuesta" id="idRespuesta">
     <br><br>
     <button onclick="enviarMod()" type="button">Enviar modificaciones</button>
     `
@@ -38,16 +62,16 @@ function mostrarPreg(){
 }
 
 function enviarMod(){
-    let textoPregunta = document.getElementById('textoPregunta').value
-    let idPregunta = document.getElementById('idPregunta').value
-    console.log
+    let textoRespuesta = document.getElementById('textoRespuesta').value
+    let idRespuesta = document.getElementById('idRespuesta').value
     
     $.ajax({
-    url:"/modificarPregunta",
+    url:"/modificarRespuesta",
     type:"PUT",
-    data: {textoPregunta:textoPregunta, idPregunta:idPregunta},
+    data: {textoRespuesta:textoRespuesta, idRespuesta:idRespuesta},
     success: function(response){
-        alert('Modificaciones guardadas con exito')
+        alert(`Modificaciones guardadas con exito . ${response[1]}.`)
+        cargarPreguntas()
     },
     error: function(error){
         console.log(error);
