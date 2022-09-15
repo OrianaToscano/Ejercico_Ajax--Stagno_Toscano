@@ -38,7 +38,7 @@ def get():
 
 # ----------------------------------------------
 
-@app.route('/listaRespuestas', methods=['GET','POST'])
+@app.route('/listaRespuestas', methods=['GET'])
 def listaRespuestas():
     conn = sqlite3.connect('dataBase.db')
     conn.row_factory = sqlite3.Row
@@ -59,7 +59,7 @@ def listaRespuestas():
         respuestas.append(respuesta)
     return respuestas
 
-@app.route('/agregarPreguntas', methods=['GET','POST'])
+@app.route('/agregarPreguntas', methods=['POST'])
 def crear():
     conn = sqlite3.connect('dataBase.db')
 
@@ -69,10 +69,15 @@ def crear():
 
     q = f"""INSERT INTO Preguntas(pregunta, categoria,nivel)
           VALUES('{preg}','{categ}','{nivel}');"""
-    conn.execute(q)
-    conn.commit()
-    conn.close()
-    return "True"
+
+    try:
+        conn.execute(q)
+        conn.commit()
+        conn.close()
+        return "True"
+    except:
+        return 'False'
+    
 
       
 @app.route('/post')
@@ -91,13 +96,17 @@ def modificarBase():
     id = request.form['idRespuesta']
     conn = sqlite3.connect('dataBase.db')
     cur = conn.cursor()
-    cur.execute(f"""UPDATE Respuestas
+    q = f"""UPDATE Respuestas
       SET respuesta='{resp}'
-      WHERE id_respuesta={id};""")
-    conn.commit()
-    conn.close()
+      WHERE id_respuesta={id};"""
 
-    return ["True", f"""La modificacion ingresada a la base de datos es: '{resp}'"""]
+    try:
+        cur.execute(q)
+        conn.commit()
+        conn.close()
+        return ["True", f"""La modificacion ingresada a la base de datos es: '{resp}'"""]
+    except:
+        return "False"
 
 # -------------------------------------------------
     
@@ -109,19 +118,25 @@ def delete():
 def borrarBase():
     id = request.form['idPregunta']
     print(id)
-    cur = conn.cursor()
-    cur.execute("""SELECT *
-                        FROM Preguntas;
-                    """)
-    rows = cur.fetchall()
     conn = sqlite3.connect('dataBase.db')
-    conn.execute(f"""DELETE FROM Preguntas
-                  WHERE id_pregunta={id};""")
+    cur = conn.cursor()
+    cur.execute(f"""SELECT pregunta
+                        FROM Preguntas
+                        WHERE id_pregunta={id};
+                    """)
+    data = cur.fetchall()
     conn.commit()
-    conn.close()
-    
 
-    return ["True", f"""La pregunta borrada es: '{resp}'"""]
+    q = f"""DELETE FROM Preguntas
+                  WHERE id_pregunta={id};"""
+
+    try:
+        conn.execute(q)
+        conn.commit()
+        conn.close()
+        return ["True", f"""La pregunta borrada es: '{data[0][0]}'"""]
+    except:
+        return "False"
 
     
 app.run(host='0.0.0.0', port=81)

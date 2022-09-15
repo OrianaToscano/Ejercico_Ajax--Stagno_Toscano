@@ -45,8 +45,11 @@ function enviarDel(){
     type:"DELETE",
     data: {idPregunta:idPregunta},
     success: function(response){
-        alert('Pregunta borrada con exito')
-        cargarPregunta()
+        if(response[0] == 'True'){
+            alert(`Respuesta borrada con exito . ${response[1]}.`)
+        }else{
+            alert('Ha ocurrido un error con la base de datos')
+        }
     },
     error: function(error){
         console.log(error);

@@ -70,8 +70,14 @@ function enviarMod(){
     type:"PUT",
     data: {textoRespuesta:textoRespuesta, idRespuesta:idRespuesta},
     success: function(response){
-        alert(`Modificaciones guardadas con exito . ${response[1]}.`)
-        cargarPreguntas()
+        if(response[0] == 'True'){
+            alert(`Modificaciones guardadas con exito . ${response[1]}.`)
+            cargarPreguntas()
+        }else{
+            alert('Ha ocurrido un error con la base de datos')
+        }
+       
+        
     },
     error: function(error){
         console.log(error);
